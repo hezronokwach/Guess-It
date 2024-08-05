@@ -26,15 +26,29 @@ values = deque(maxlen=10)
 
 # Read values from standard input
 first_input = True  # Flag to check if it's the first input
-for line in sys.stdin:
-    # Strip whitespace and check if the line is not empty
-    line = line.strip()
+print("Enter values one per line (type 'exit' to finish):")
+
+while True:
+    try:
+        line = input().strip()
+    except EOFError:
+        print("End of input detected. Exiting the program.")
+        break
+
+    if line.lower() == "exit":
+        print("Exiting the program.")
+        break
+
     if line:
-        value = int(line)
+        try:
+            value = int(line)
+        except ValueError:
+            print("Invalid input. Please enter a valid integer or 'exit' to finish.")
+            continue
 
         # Create a temporary list with the current values plus the new input
         temp_values = list(values) + [value]
-        
+
         # Replace outliers in the temporary list
         adjusted_values = replace_outliers(temp_values)
         adjusted_value = adjusted_values[-1]  # Get the last value (the current input)
@@ -64,3 +78,5 @@ for line in sys.stdin:
             else:
                 # If there's not enough data after filtering, print a message
                 print("Not enough data to calculate range after replacing outliers.")
+    else:
+        print("Empty input detected. Please enter a valid integer or 'exit' to finish.")
