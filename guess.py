@@ -24,3 +24,6 @@ for line in sys.stdin:
 
             # Print the range for the next input
             print(f"{lower_bound:.0f} {upper_bound:.0f}")
+        else:
+            # If there's only one value, we can't calculate a range
+            print("Not enough data to calculate range.")
