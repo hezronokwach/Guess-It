@@ -22,61 +22,39 @@ def replace_outliers(data, std_dev_factor=3):
         return [mean] * len(data)  # If all values are outliers, replace with the mean
 
 # Initialize the deque with a maximum length of 10
-values = deque(maxlen=10)
+values = deque(maxlen=50)
 
 # Read values from standard input
-first_input = True  # Flag to check if it's the first input
-print("Enter values one per line (type 'exit' to finish):")
-
-while True:
-    try:
-        line = input().strip()
-    except EOFError:
-        print("End of input detected. Exiting the program.")
-        break
-
-    if line.lower() == "exit":
-        print("Exiting the program.")
-        break
-
+input_count = 0  # Count the number of inputs
+for line in sys.stdin:
+    # Strip whitespace and check if the line is not empty
+    line = line.strip()
     if line:
         try:
             value = int(line)
         except ValueError:
-            print("Invalid input. Please enter a valid integer or 'exit' to finish.")
+            print("Invalid input. Please enter a valid integer.")
             continue
 
-        # Create a temporary list with the current values plus the new input
-        temp_values = list(values) + [value]
+        values.append(value)
+        input_count += 1
 
-        # Replace outliers in the temporary list
-        adjusted_values = replace_outliers(temp_values)
-        adjusted_value = adjusted_values[-1]  # Get the last value (the current input)
+        if input_count > 1:  # Start calculating the range from the second input onward
+            # Replace outliers from the current values
+            adjusted_values = replace_outliers(list(values))
 
-        # Add the adjusted value to the deque
-        values.append(adjusted_value)
-
-        if first_input:
-            # For the first input, set a default range
-            lower_bound = adjusted_value - 10  # Example: 10 units below the first input
-            upper_bound = adjusted_value + 10  # Example: 10 units above the first input
-            print(f"{lower_bound} {upper_bound}")
-            first_input = False  # Set the flag to False after the first input
-        else:
             # Ensure we have at least 2 values to calculate standard deviation
-            if len(values) > 1:
+            if len(adjusted_values) > 1:
                 # Calculate the mean and standard deviation of the adjusted window
-                mean = statistics.mean(values)
-                std_dev = statistics.stdev(values)
+                mean = statistics.mean(adjusted_values)
+                std_dev = statistics.stdev(adjusted_values)
 
-                # Calculate the lower and upper bounds
-                lower_bound = mean - 1.8 * std_dev
-                upper_bound = mean + 1.8 * std_dev
+                # Calculate the lower add upper bounds
+                lower_bound = mean - 3 * std_dev
+                upper_bound = mean + 3 * std_dev
 
                 # Print the range for the next input
                 print(f"{lower_bound:.0f} {upper_bound:.0f}")
             else:
                 # If there's not enough data after filtering, print a message
                 print("Not enough data to calculate range after replacing outliers.")
-    else:
-        print("Empty input detected. Please enter a valid integer or 'exit' to finish.")
