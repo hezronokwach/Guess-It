@@ -23,7 +23,7 @@ Enter integer values one per line.
 
 For each input value (from the second input onward), the script calculates and prints the predicted range for the next input.
 ```bash
-$ python3 script_name.py
+$ python3 guess.py
 100
 123
 63 160
