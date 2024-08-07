@@ -13,7 +13,7 @@ Running the Script
 
 To run the script, execute the following command:
 ```bash
-python3 script_name.py
+python3 guess.py
 ```
 ## Input Format
 
